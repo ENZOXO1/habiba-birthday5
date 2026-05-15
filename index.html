@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Happy Birthday Habiba 🎂</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-pink: #ff758c;
+      --deep-pink: #c9184a;
+      --accent-gold: #ffb347;
+      --accent-lavender: #c77dff;
+      --glass-bg: rgba(255,255,255,0.22);
+      --glass-border: rgba(255,255,255,0.45);
+      --bg1: #ff9a9e; --bg2: #fbc2eb; --bg3: #c77dff; --bg4: #ff758c; --bg5: #ffb347;
+      --text-main: #fff;
+      --card-bg: rgba(255,255,255,0.22);
+      --card-border: rgba(255,255,255,0.45);
+      --msg-color: #444;
+    }
+    [data-theme="dark"] {
+      --bg1: #1a0010; --bg2: #2d0033; --bg3: #1a003a; --bg4: #2a0020; --bg5: #1a1000;
+      --glass-bg: rgba(0,0,0,0.35);
+      --glass-border: rgba(255,255,255,0.15);
+      --text-main: #ffe0ec;
+      --card-bg: rgba(20,0,30,0.55);
+      --card-border: rgba(199,125,255,0.3);
+      --msg-color: #f0c0d0;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html { scroll-behavior: smooth; height: 100%; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
+
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: linear-gradient(160deg, var(--bg1) 0%, var(--bg2) 25%, var(--bg3) 55%, var(--bg4) 80%, var(--bg5) 100%);
+      background-attachment: fixed;
+      min-height: 100vh;
+      color: var(--text-main);
+      overflow-x: hidden;
+      transition: background 0.6s;
+    }
+
+    /* ===== FLOATING BG ===== */
+    .floating-container { position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+    .floating-item {
+      position: absolute; white-space: nowrap; font-weight: 800; opacity: 0;
+      animation: fadeInOut var(--duration) ease-in-out infinite;
+      text-shadow: 0 4px 15px rgba(255,255,255,0.5); will-change: opacity;
+    }
+    @keyframes fadeInOut {
+      0%,100% { opacity: 0; transform: scale(0.8); }
+      50% { opacity: 0.85; transform: scale(1.1); }
+    }
+
+    /* ===== CONFETTI ===== */
+    .confetti-piece {
+      position: fixed; top: -20px; pointer-events: none; z-index: 9998;
+      width: 10px; height: 10px; border-radius: 2px;
+      animation: confettiFall var(--cf-dur) ease-in var(--cf-delay) forwards;
+    }
+    @keyframes confettiFall {
+      0% { transform: translateX(0) rotate(0deg); opacity: 1; top: -20px; }
+      100% { transform: translateX(var(--cf-x)) rotate(var(--cf-rot)); opacity: 0; top: 110vh; }
+    }
+
+    /* ===== TOP BAR ===== */
+    .top-bar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 16px;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+    .top-bar-btns { display: flex; gap: 10px; }
+    .icon-btn {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: rgba(255,255,255,0.25);
+      border: 1px solid rgba(255,255,255,0.4);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 18px;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .icon-btn:active { transform: scale(0.9); }
+
+    /* عداد الأيام */
+    .day-counter {
+      font-size: 0.7rem; font-weight: 800;
+      background: rgba(255,255,255,0.25);
+      border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 20px; padding: 5px 12px;
+      text-align: center; line-height: 1.3;
+    }
+    .day-counter .days-num { font-size: 1.1rem; display: block; }
+
+    /* ===== SECTIONS ===== */
+    section {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      padding: 80px 20px 50px; position: relative; z-index: 2;
+    }
+
+    .scroll-hint {
+      position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+      opacity: 0.75; animation: bounceDown 1.8s ease-in-out infinite; z-index: 10;
+    }
+    .scroll-hint span { font-size: 0.65rem; font-weight: 800; letter-spacing: 1px; }
+    .scroll-hint svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; }
+    @keyframes bounceDown {
+      0%,100% { transform: translateX(-50%) translateY(0); opacity: 0.75; }
+      50% { transform: translateX(-50%) translateY(8px); opacity: 1; }
+    }
+
+    /* ===== CARD ===== */
+    .card-container { width: 100%; max-width: 450px; height: 560px; perspective: 1500px; position: relative; }
+    .card { width: 100%; height: 100%; position: relative; transition: transform 1.2s cubic-bezier(0.4,0,0.2,1); transform-style: preserve-3d; }
+    .card.flipped { transform: rotateY(180deg); }
+
+    .card-front, .card-back {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      backface-visibility: hidden; -webkit-backface-visibility: hidden;
+      background: var(--card-bg);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border: 2px solid var(--card-border);
+      border-radius: 40px; padding: 35px 25px;
+      text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      box-shadow: 0 20px 45px rgba(199,125,255,0.25), 0 4px 20px rgba(255,117,140,0.2);
+    }
+    .card-back { transform: rotateY(180deg); background: rgba(255,255,255,0.32); }
+    [data-theme="dark"] .card-back { background: rgba(40,0,55,0.6); }
+
+    .glass-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border: 2px solid var(--card-border);
+      border-radius: 35px; padding: 30px 22px;
+      text-align: center;
+      box-shadow: 0 20px 45px rgba(199,125,255,0.2);
+      width: 100%; max-width: 450px;
+    }
+
+    .btn-spin {
+      background: linear-gradient(135deg, #fff 0%, #ffeaf0 100%);
+      color: var(--deep-pink); border: none;
+      padding: 13px 32px; border-radius: 50px;
+      font-weight: 800; font-family: 'Cairo', sans-serif;
+      font-size: clamp(0.85rem, 3.5vw, 1rem);
+      margin-top: 20px; cursor: pointer;
+      box-shadow: 0 10px 25px rgba(201,24,74,0.18);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .btn-spin:active { transform: scale(0.95); }
+
+    .book-wrapper { margin: 15px auto; width: 130px; height: 175px; cursor: pointer; }
+    .book-wrapper img {
+      width: 100%; height: 100%; object-fit: cover;
+      border-radius: 20px; border: 4px solid #fff;
+      box-shadow: 0 8px 25px rgba(199,125,255,0.3);
+      transition: transform 0.2s;
+    }
+    .book-wrapper:active img { transform: scale(1.04); }
+
+    .main-title { font-size: clamp(2rem,9vw,2.8rem); font-weight: 800; }
+    .sub-text { font-size: clamp(0.85rem,3.5vw,1rem); line-height: 1.8; }
+    .message-text { color: var(--msg-color); font-size: clamp(1rem,4vw,1.22rem); line-height: 2; font-weight: 800; }
+    .section-title { font-size: clamp(1.5rem,7vw,2.1rem); font-weight: 800; margin: 10px 0 6px; }
+    .section-sub { font-size: clamp(0.85rem,3.5vw,1.05rem); line-height: 1.8; }
+
+    /* ===== NAV ===== */
+    .nav { position: fixed; left: 12px; top: 50%; transform: translateY(-50%); z-index: 1000; display: flex; flex-direction: column; gap: 13px; }
+    .nav-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.4); cursor: pointer; transition: all 0.4s ease; }
+    .nav-dot.active { background: #fff; height: 25px; border-radius: 10px; box-shadow: 0 0 15px rgba(255,255,255,0.8); }
+
+    /* ===== PARTICLES ===== */
+    .rose-particle {
+      position: fixed; bottom: -50px; pointer-events: none; z-index: 9999;
+      font-size: 28px; animation: roseExplode 2.5s cubic-bezier(0.1,0.5,0.2,1) forwards; will-change: transform,opacity;
+    }
+    @keyframes roseExplode {
+      0% { transform: translate(0,0) scale(0) rotate(0deg); opacity: 0; }
+      15% { opacity: 1; transform: scale(1.2); }
+      100% { transform: translate(var(--target-x),-120vh) scale(1) rotate(var(--target-deg)); opacity: 0; }
+    }
+    .touch-emoji {
+      position: fixed; pointer-events: none; z-index: 9999; font-size: 26px;
+      animation: emojiFloatUp 1.2s cubic-bezier(0.22,1,0.36,1) forwards; will-change: transform,opacity;
+    }
+    @keyframes emojiFloatUp {
+      0% { transform: translate(-50%,-50%) scale(0.5); opacity: 0; }
+      20% { transform: translate(-50%,-80%) scale(1.2); opacity: 1; }
+      100% { transform: translate(calc(-50% + var(--rx)),-200px) scale(1) rotate(var(--rd)); opacity: 0; }
+    }
+
+    /* ===== GIFT ===== */
+    .gift-box {
+      width: 80px; height: 80px;
+      background: linear-gradient(135deg,#fff,#ffeaf0);
+      border-radius: 20px; display: flex; align-items: center; justify-content: center;
+      font-size: 35px; margin: 18px auto 0; cursor: pointer;
+      box-shadow: 0 8px 20px rgba(201,24,74,0.15);
+      transition: width 0.4s ease, height 0.4s ease, border-radius 0.4s ease;
+    }
+    .gift-box.active { width: 100%; height: 62px; border-radius: 16px; }
+    .gift-box.shake { animation: shakeBox 0.5s ease; }
+    @keyframes shakeBox {
+      0%,100% { transform: translateX(0); }
+      20% { transform: translateX(-10px); }
+      40% { transform: translateX(10px); }
+      60% { transform: translateX(-8px); }
+      80% { transform: translateX(8px); }
+    }
+    .gift-input {
+      display: none; width: 100%; border: none; background: transparent; outline: none;
+      text-align: center; color: var(--deep-pink);
+      font-size: clamp(15px,4vw,18px); font-weight: 800; font-family: 'Cairo';
+    }
+    .gift-box.active .gift-input { display: block; }
+    .gift-box.active .gift-emoji { display: none; }
+    .wrong-hint { margin-top: 10px; font-size: 0.82rem; font-weight: 800; opacity: 0; transition: opacity 0.3s; min-height: 20px; }
+    .wrong-hint.visible { opacity: 1; }
+
+    /* ===== VIDEO ===== */
+    .video-wrapper {
+      width: 100%; position: relative; padding-bottom: 56.25%; height: 0;
+      border-radius: 22px; overflow: hidden; margin: 18px 0; background: #000;
+    }
+    .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+
+    /* ===== TIMELINE ===== */
+    .timeline { width: 100%; margin-top: 15px; display: flex; flex-direction: column; gap: 0; }
+    .tl-item {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 12px 0; position: relative;
+    }
+    .tl-item:not(:last-child)::after {
+      content: ''; position: absolute;
+      right: 19px; top: 44px; bottom: 0;
+      width: 2px; background: rgba(255,255,255,0.3);
+    }
+    .tl-dot {
+      width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--primary-pink), var(--accent-lavender));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; box-shadow: 0 4px 12px rgba(199,125,255,0.4);
+    }
+    .tl-content { flex: 1; text-align: right; }
+    .tl-year { font-size: 0.7rem; font-weight: 800; opacity: 0.7; }
+    .tl-text { font-size: clamp(0.82rem,3.2vw,0.95rem); font-weight: 600; line-height: 1.5; }
+
+    /* ===== GALLERY ===== */
+    .gallery-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 10px; width: 100%; margin-top: 15px;
+    }
+    .gallery-item {
+      aspect-ratio: 1; border-radius: 18px; overflow: hidden; cursor: pointer;
+      border: 3px solid rgba(255,255,255,0.4);
+      box-shadow: 0 6px 18px rgba(199,125,255,0.25);
+      transition: transform 0.2s, box-shadow 0.2s;
+      background: rgba(255,255,255,0.15);
+      display: flex; align-items: center; justify-content: center; font-size: 3rem;
+    }
+    .gallery-item:active { transform: scale(0.96); }
+    .gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    /* ===== LIGHTBOX ===== */
+    .lightbox {
+      position: fixed; inset: 0; z-index: 10000;
+      background: rgba(0,0,0,0.9);
+      display: none; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img { max-width: 100%; max-height: 85vh; border-radius: 20px; object-fit: contain; }
+    .lightbox-emoji { font-size: 8rem; }
+    .lightbox-close {
+      position: absolute; top: 20px; left: 20px;
+      width: 42px; height: 42px; border-radius: 50%;
+      background: rgba(255,255,255,0.2); border: none; cursor: pointer;
+      font-size: 20px; display: flex; align-items: center; justify-content: center; color: #fff;
+    }
+
+    /* ===== SECRET MESSAGE ===== */
+    .secret-btn {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.2);
+      font-size: 20px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      margin: 18px auto 0;
+      transition: background 0.2s, transform 0.15s;
+      position: relative;
+    }
+    .secret-btn::after {
+      content: 'رسالة سرية 🤫';
+      position: absolute; bottom: 110%; left: 50%; transform: translateX(-50%);
+      background: rgba(0,0,0,0.7); color: #fff;
+      font-size: 0.7rem; font-weight: 800; white-space: nowrap;
+      padding: 4px 10px; border-radius: 10px;
+      opacity: 0; pointer-events: none; transition: opacity 0.2s;
+    }
+    .secret-btn:hover::after, .secret-btn:focus::after { opacity: 1; }
+    .secret-btn:active { transform: scale(0.9); }
+    .secret-reveal {
+      display: none; margin-top: 16px; padding: 16px 18px;
+      background: rgba(255,255,255,0.18); border-radius: 20px;
+      border: 1.5px solid rgba(255,255,255,0.35);
+      font-size: clamp(0.85rem,3.5vw,1rem); font-weight: 700; line-height: 1.9;
+      animation: fadeSlideIn 0.5s ease;
+    }
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== SHARE TOAST ===== */
+    .toast {
+      position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(80px);
+      background: rgba(0,0,0,0.8); color: #fff;
+      font-size: 0.85rem; font-weight: 800; padding: 10px 22px;
+      border-radius: 30px; z-index: 99999;
+      transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.4s;
+      opacity: 0; pointer-events: none;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+    /* ===== MUSIC BTN ===== */
+    .music-playing { background: rgba(255,200,50,0.35) !important; }
+
+    #s4, #s5, #s6, #s7 { display: none; opacity: 0; transition: opacity 0.8s; }
+    #s4.visible, #s5.visible, #s6.visible, #s7.visible { display: flex; opacity: 1; }
+  </style>
+</head>
+
+<body onclick="spawnEmoji(event)">
+
+  <!-- Floating BG -->
+  <div class="floating-container" id="floatLayer"></div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+    <img id="lightboxImg" src="" alt="" style="display:none">
+    <div id="lightboxEmoji" class="lightbox-emoji"></div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="day-counter" id="dayCounter">
+      <span class="days-num" id="daysNum">...</span>
+      يوم من عيد ميلادها
+    </div>
+    <div class="top-bar-btns">
+      <div class="icon-btn" id="musicBtn" onclick="toggleMusic()" title="موسيقى">🎵</div>
+      <div class="icon-btn" onclick="shareIt()" title="شارك">🔗</div>
+      <div class="icon-btn" onclick="toggleTheme()" id="themeBtn" title="الوضع الليلي">🌙</div>
+    </div>
+  </div>
+
+  <!-- Nav -->
+  <div class="nav" id="mainNav">
+    <div class="nav-dot active" data-sec="s1" onclick="scrollToSec('s1')"></div>
+    <div class="nav-dot" data-sec="s2" onclick="scrollToSec('s2')"></div>
+    <div class="nav-dot" data-sec="s3" onclick="scrollToSec('s3')"></div>
+    <div class="nav-dot" data-sec="s4" onclick="scrollToSec('s4')" style="display:none" id="dot-s4"></div>
+    <div class="nav-dot" data-sec="s5" onclick="scrollToSec('s5')" style="display:none" id="dot-s5"></div>
+    <div class="nav-dot" data-sec="s6" onclick="scrollToSec('s6')" style="display:none" id="dot-s6"></div>
+    <div class="nav-dot" data-sec="s7" onclick="scrollToSec('s7')" style="display:none" id="dot-s7"></div>
+  </div>
+
+  <!-- ===== S1: البطاقة الرئيسية ===== -->
+  <section id="s1">
+    <div class="card-container">
+      <div class="card" id="mainCard">
+        <div class="card-front">
+          <h2>🥭</h2>
+          <h1 class="main-title">حبيبة</h1>
+          <p class="sub-text">كل سنة وأنتِ طيبة وناجحة دايماً 🎂</p>
+          <div class="book-wrapper" onclick="openLightboxImg('https://i.ibb.co/1JB4xdLm/58e65ce405eec86534fb3ce5dbe32041.jpg')">
+            <img src="https://i.ibb.co/1JB4xdLm/58e65ce405eec86534fb3ce5dbe32041.jpg" alt="Habiba">
+          </div>
+          <button class="btn-spin" onclick="flipCard()">شوفي الرسالة ✉️</button>
+        </div>
+        <div class="card-back">
+          <h2 style="margin-bottom:22px;color:var(--deep-pink);font-size:clamp(1.3rem,6vw,1.7rem);">تقدير 🤜🤛</h2>
+          <div class="message-text">
+            "سنة جديدة، وطموح جديد.. <br>
+            كل سنة وأنتِ في أحسن حال <br>
+            ومحققة كل أحلامك"
+          </div>
+          <!-- زر الرسالة السرية -->
+          <div class="secret-btn" onclick="toggleSecret(event)" title="رسالة سرية">🔐</div>
+          <div class="secret-reveal" id="secretMsg">
+            💌 بصراحة.. أنتِ من أجمل الناس اللي في حياتي، ومش بس عشان عيد ميلادك — ده رأيي دايماً. عقبال ما تحققي كل أحلامك وأكتر 🌟
+          </div>
+          <button class="btn-spin" onclick="flipCard()">رجوع ↺</button>
+        </div>
+      </div>
+    </div>
+    <div class="scroll-hint"><span>كمّلي</span><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+  </section>
+
+  <!-- ===== S2: مشوار الـ20 ===== -->
+  <section id="s2">
+    <div class="glass-card">
+      <div style="font-size:3.5rem;">🚀🏆</div>
+      <h1 class="section-title">مشوار الـ 20</h1>
+      <p class="section-sub">سنة جديدة يعني طموح جديد.. <br> كلي ثقة إنك هتوصلي لكل أحلامك ✨</p>
+    </div>
+    <div class="scroll-hint"><span>كمّلي</span><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+  </section>
+
+  <!-- ===== S3: الكود السري ===== -->
+  <section id="s3">
+    <div class="glass-card">
+      <div style="font-size:3rem;">🎁</div>
+      <h1 class="section-title">افتحي هديتك</h1>
+      <p class="section-sub">اكتبي الكود السري عشان تشوفي المفاجأة</p>
+      <div class="gift-box" id="gift" onclick="openGift()">
+        <span class="gift-emoji">🎁</span>
+        <input type="number" pattern="\d*" inputmode="numeric" class="gift-input" id="giftInput"
+               placeholder="الكود هنا..." oninput="checkCode(this)">
+      </div>
+      <div class="wrong-hint" id="wrongHint">❌ الكود غلط، حاولي تاني!</div>
+    </div>
+  </section>
+
+  <!-- ===== S4: الفيديو (يظهر بعد الكود) ===== -->
+  <section id="s4">
+    <div class="glass-card">
+      <div style="font-size:clamp(1.4rem,5.5vw,2rem);">🎬 ذكرى ليكي</div>
+      <div class="video-wrapper">
+        <iframe id="birthdayVideo"
+                src="about:blank"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen="true"></iframe>
+      </div>
+      <p style="font-weight:800;font-size:clamp(0.88rem,3.5vw,1rem);">عقبال الـ 100 سنة تمني أمنية 🎂</p>
+    </div>
+    <div class="scroll-hint"><span>كمّلي</span><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+  </section>
+
+  <!-- ===== S5: تايملاين ===== -->
+  <section id="s5">
+    <div class="glass-card">
+      <div style="font-size:2.8rem;">📅</div>
+      <h1 class="section-title">أجمل لحظاتنا</h1>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot">🌱</div>
+          <div class="tl-content">
+            <div class="tl-year">البداية</div>
+            <div class="tl-text">أول يوم عرفناك فيه وحسينا إننا عارفينك من زمان 💫</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot">😂</div>
+          <div class="tl-content">
+            <div class="tl-year">ضحكات</div>
+            <div class="tl-text">اللحظات دي مش هتتنسى.. ضحكنا لحد ما وجعنا 🤣</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot">💪</div>
+          <div class="tl-content">
+            <div class="tl-year">تحديات</div>
+            <div class="tl-text">في كل صعب كنتِ واقفة وعدتِيها بجدارة ✨</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot">🎂</div>
+          <div class="tl-content">
+            <div class="tl-year">النهارده</div>
+            <div class="tl-text">عيد ميلاد سعيد يا أجمل واحدة 💖</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="scroll-hint"><span>كمّلي</span><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+  </section>
+
+  <!-- ===== S6: Gallery ===== -->
+  <section id="s6">
+    <div class="glass-card">
+      <div style="font-size:2.8rem;">🖼️</div>
+      <h1 class="section-title">معرض الذكريات</h1>
+      <p class="section-sub">اضغطي على أي صورة 👇</p>
+      <div class="gallery-grid">
+        <div class="gallery-item" onclick="openLightboxImg('https://i.ibb.co/1JB4xdLm/58e65ce405eec86534fb3ce5dbe32041.jpg')">
+          <img src="https://i.ibb.co/1JB4xdLm/58e65ce405eec86534fb3ce5dbe32041.jpg" alt="صورة 1">
+        </div>
+        <div class="gallery-item" onclick="openLightboxEmoji('🎂')">🎂</div>
+        <div class="gallery-item" onclick="openLightboxEmoji('🌹')">🌹</div>
+        <div class="gallery-item" onclick="openLightboxEmoji('🎊')">🎊</div>
+      </div>
+      <p style="font-size:0.75rem;opacity:0.7;margin-top:12px;">💡 تقدري تضيفي صورك الحقيقية هنا</p>
+    </div>
+    <div class="scroll-hint"><span>كمّلي</span><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+  </section>
+
+  <!-- ===== S7: نهاية ===== -->
+  <section id="s7">
+    <div class="glass-card" style="text-align:center;">
+      <div style="font-size:3.5rem;">💖</div>
+      <h1 class="section-title">كل سنة وأنتِ طيبة</h1>
+      <p class="section-sub" style="margin-top:10px;">
+        من كل قلبنا.. عيد ميلاد سعيد يا حبيبة 🎉<br>
+        عقبال ما تحققي كل أحلامك وأكتر 🌟
+      </p>
+      <div style="margin-top:25px;font-size:2rem;letter-spacing:6px;">🌸🎂🌸</div>
+    </div>
+  </section>
+
+  <!-- Hidden audio -->
+  <audio id="bgMusic" loop>
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    /* ===== DAY COUNTER ===== */
+    (function() {
+      // تاريخ عيد ميلاد حبيبة - عدّل السنة حسب آخر عيد ميلاد
+      const birthday = new Date(new Date().getFullYear(), 4, 15); // مثال: 15 مايو
+      const now = new Date();
+      let diff = Math.floor((now - birthday) / (1000*60*60*24));
+      if (diff < 0) diff = 0;
+      document.getElementById('daysNum').textContent = diff;
+    })();
+
+    /* ===== CONFETTI on load ===== */
+    const confettiColors = ['#ff758c','#ffb347','#c77dff','#fff','#fbc2eb','#ff9a9e'];
+    function launchConfetti() {
+      for (let i = 0; i < 80; i++) {
+        const c = document.createElement('div');
+        c.className = 'confetti-piece';
+        c.style.left = Math.random() * 100 + 'vw';
+        c.style.background = confettiColors[Math.floor(Math.random()*confettiColors.length)];
+        c.style.setProperty('--cf-dur', (1.5 + Math.random()*2) + 's');
+        c.style.setProperty('--cf-delay', (Math.random()*1.2) + 's');
+        c.style.setProperty('--cf-x', (Math.random()*200-100) + 'px');
+        c.style.setProperty('--cf-rot', (Math.random()*720-360) + 'deg');
+        c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), 3500);
+      }
+    }
+    window.addEventListener('load', launchConfetti);
+
+    /* ===== FLOATING BG ===== */
+    const floatList = ["🎂","🎁","🌹","🌸","كل سنة وأنتِ طيبة","✨","💖","حبيبة ✨"];
+    function createFloatingItems() {
+      const layer = document.getElementById('floatLayer');
+      for (let i = 0; i < 40; i++) {
+        setTimeout(() => {
+          const el = document.createElement('div');
+          el.className = 'floating-item';
+          el.innerText = floatList[Math.floor(Math.random()*floatList.length)];
+          el.style.left = (Math.random()*90)+'vw';
+          el.style.top = (Math.random()*90)+'vh';
+          const dur = 4 + Math.random()*4;
+          el.style.setProperty('--duration', dur+'s');
+          el.style.fontSize = (18+Math.random()*14)+'px';
+          layer.appendChild(el);
+          setTimeout(()=>el.remove(), dur*1000);
+        }, i*300);
+      }
+      setTimeout(createFloatingItems, 5000);
+    }
+    createFloatingItems();
+
+    /* ===== ROSE EXPLOSION ===== */
+    function roseExplosion() {
+      for (let i = 0; i < 100; i++) {
+        setTimeout(() => {
+          const r = document.createElement('div');
+          r.className = 'rose-particle'; r.innerText = '🌹';
+          r.style.left = Math.random()*100+'vw';
+          r.style.setProperty('--target-x', (Math.random()*400-200)+'px');
+          r.style.setProperty('--target-deg', (Math.random()*720-360)+'deg');
+          document.body.appendChild(r);
+          setTimeout(()=>r.remove(), 2500);
+        }, i*20);
+      }
+    }
+
+    /* ===== TOUCH EMOJI ===== */
+    function spawnEmoji(e) {
+      const list = ["♥️","🎂","🎊","🎁","🎈","🎇"];
+      const el = document.createElement('div');
+      el.className = 'touch-emoji';
+      el.innerText = list[Math.floor(Math.random()*list.length)];
+      el.style.left = e.clientX+'px'; el.style.top = e.clientY+'px';
+      el.style.setProperty('--rx', (Math.random()*100-50)+'px');
+      el.style.setProperty('--rd', (Math.random()*60-30)+'deg');
+      document.body.appendChild(el);
+      setTimeout(()=>el.remove(), 1200);
+    }
+
+    /* ===== CARD FLIP ===== */
+    function flipCard() { document.getElementById('mainCard').classList.toggle('flipped'); }
+
+    /* ===== SECRET MESSAGE ===== */
+    function toggleSecret(e) {
+      e.stopPropagation();
+      const msg = document.getElementById('secretMsg');
+      if (msg.style.display === 'block') { msg.style.display = 'none'; }
+      else { msg.style.display = 'block'; }
+    }
+
+    /* ===== GIFT CODE ===== */
+    function openGift() {
+      const g = document.getElementById('gift');
+      if (!g.classList.contains('active')) {
+        g.classList.add('active');
+        setTimeout(()=>document.getElementById('giftInput').focus(), 100);
+      }
+    }
+    let wrongTO = null;
+    function checkCode(input) {
+      const hint = document.getElementById('wrongHint');
+      const gift = document.getElementById('gift');
+      if (input.value === "5797418438") {
+        hint.classList.remove('visible');
+        roseExplosion();
+        launchConfetti();
+        // load video
+        document.getElementById('birthdayVideo').src = 'https://www.youtube.com/embed/g34gq3CGmSI?rel=0&modestbranding=1&controls=1&autoplay=1';
+        // show all hidden sections
+        ['s4','s5','s6','s7'].forEach((id,idx) => {
+          setTimeout(() => {
+            const sec = document.getElementById(id);
+            sec.style.display = 'flex';
+            setTimeout(()=>sec.classList.add('visible'), 50);
+            const dot = document.getElementById('dot-'+id);
+            if (dot) dot.style.display = 'block';
+          }, idx*200);
+        });
+        setTimeout(()=>scrollToSec('s4'), 600);
+        showToast('🎉 كود صح! تمتعي بالمفاجأة!');
+      } else if (input.value.length >= 10) {
+        gift.classList.remove('shake');
+        void gift.offsetWidth;
+        gift.classList.add('shake');
+        hint.classList.add('visible');
+        input.value = '';
+        if (wrongTO) clearTimeout(wrongTO);
+        wrongTO = setTimeout(()=>{ hint.classList.remove('visible'); gift.classList.remove('shake'); }, 2500);
+      }
+    }
+
+    /* ===== LIGHTBOX ===== */
+    function openLightboxImg(src) {
+      const lb = document.getElementById('lightbox');
+      document.getElementById('lightboxImg').src = src;
+      document.getElementById('lightboxImg').style.display = 'block';
+      document.getElementById('lightboxEmoji').textContent = '';
+      lb.classList.add('open');
+    }
+    function openLightboxEmoji(emoji) {
+      const lb = document.getElementById('lightbox');
+      document.getElementById('lightboxImg').style.display = 'none';
+      document.getElementById('lightboxEmoji').textContent = emoji;
+      lb.classList.add('open');
+    }
+    function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
+
+    /* ===== MUSIC ===== */
+    let musicOn = false;
+    function toggleMusic() {
+      const audio = document.getElementById('bgMusic');
+      const btn = document.getElementById('musicBtn');
+      if (musicOn) { audio.pause(); btn.textContent='🎵'; btn.classList.remove('music-playing'); musicOn=false; }
+      else {
+        audio.play().catch(()=>{});
+        btn.textContent='🔇'; btn.classList.add('music-playing'); musicOn=true;
+      }
+    }
+
+    /* ===== THEME ===== */
+    function toggleTheme() {
+      const html = document.documentElement;
+      const btn = document.getElementById('themeBtn');
+      if (html.dataset.theme === 'dark') { html.dataset.theme='light'; btn.textContent='🌙'; }
+      else { html.dataset.theme='dark'; btn.textContent='☀️'; }
+    }
+
+    /* ===== SHARE ===== */
+    function shareIt() {
+      const url = window.location.href;
+      if (navigator.share) {
+        navigator.share({ title: 'Happy Birthday Habiba 🎂', url }).catch(()=>{});
+      } else if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(()=>showToast('✅ اللينك اتكوبي!')).catch(()=>showToast('❌ مش قادر يكوبي'));
+      } else { showToast('🔗 '+url); }
+    }
+
+    /* ===== TOAST ===== */
+    let toastTO = null;
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      if (toastTO) clearTimeout(toastTO);
+      toastTO = setTimeout(()=>t.classList.remove('show'), 3000);
+    }
+
+    /* ===== SCROLL ===== */
+    function scrollToSec(id) {
+      const t = document.getElementById(id);
+      if (t) window.scrollTo({ top: t.offsetTop, behavior: 'smooth' });
+    }
+    window.addEventListener('scroll', () => {
+      const dots = document.querySelectorAll('.nav-dot');
+      const sections = document.querySelectorAll('section');
+      let current = '';
+      sections.forEach(s => {
+        if (getComputedStyle(s).display !== 'none') {
+          if (window.pageYOffset >= s.offsetTop - window.innerHeight/2) current = s.id;
+        }
+      });
+      dots.forEach(d => d.classList.toggle('active', d.dataset.sec === current));
+    }, { passive: true });
+  </script>
+</body>
+</html>
